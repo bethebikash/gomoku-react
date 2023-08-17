@@ -1,14 +1,26 @@
+import { Route, Routes } from "react-router-dom";
 import './App.css';
-import GomokuGame from './pages/Game';
+import NavBar from './components/Navbar';
+import Game from './pages/Game';
+import Home from './pages/Home';
+import Login from "./pages/Login";
+import GameHistory from "./pages/GameHistory";
+import GameLog from "./pages/GameLog";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        header
+    <div className="app">
+      <header className="app-header">
+        <NavBar />
       </header>
       <main>
-        <GomokuGame />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/game-history" element={<GameHistory />} />
+          <Route path="/game-log/:id" element={<GameLog />} />
+        </Routes>
       </main>
     </div>
   );

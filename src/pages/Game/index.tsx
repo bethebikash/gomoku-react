@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import './style.css'
 
 enum StoneColor {
   None,
@@ -6,7 +7,7 @@ enum StoneColor {
   White,
 }
 
-const GomokuGame: React.FC = () => {
+const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [board, setBoard] = useState<StoneColor[][]>(Array.from({ length: 15 }, () => Array(15).fill(StoneColor.None)));
   const [currentPlayer, setCurrentPlayer] = useState<StoneColor>(StoneColor.Black);
@@ -196,7 +197,7 @@ const GomokuGame: React.FC = () => {
   };
 
   return (
-    <div>
+    <div id="container">
       <canvas
         ref={canvasRef}
         width={450}
@@ -220,5 +221,5 @@ const GomokuGame: React.FC = () => {
   );
 };
 
-export default GomokuGame;
+export default Game;
 
