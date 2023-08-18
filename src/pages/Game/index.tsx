@@ -294,7 +294,8 @@ const Game: React.FC = () => {
         <div id="winContainer">
           <div id="winStatus"></div>
           <div id="drawStatus"></div>
-          <p>Reset the game to play again.</p>
+          <p>Click on "Restart" to play again.</p>
+          <p>Click on "Leave" to save game details.</p>
         </div>
       </div>
     </div>
