@@ -39,11 +39,6 @@
   padding-bottom: 12px;
 }
 
-canvas {
-  border: 1px solid #000;
-  background-color: #afba6c;
-}
-
 #winContainer {
   position: absolute;
   width: 100%;

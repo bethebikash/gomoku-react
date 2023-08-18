@@ -16,7 +16,7 @@ interface Move {
   player: number;
 }
 
-enum StoneColor {
+export enum StoneColor {
   None,
   Black,
   White,
