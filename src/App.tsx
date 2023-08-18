@@ -13,7 +13,7 @@ function App() {
       <header className="app-header">
         <NavBar />
       </header>
-      <main>
+      <main className="main">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

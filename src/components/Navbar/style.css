@@ -23,3 +23,9 @@ ul > li > a:visited {
 ul > li > a:hover {
   color: #002b0b;
 }
+
+.brand {
+  color: rgb(0, 13, 22) !important;
+  font-weight: 600;
+  text-transform: uppercase;
+}

@@ -1,12 +1,19 @@
 .app {
   width: 100dvw;
   height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: #eeeeee;
 }
 
 .app-header {
   position: sticky;
   top: 0;
   left: 0;
+}
+
+.main {
+  flex-grow: 1;
 }
 
 * {
