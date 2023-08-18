@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './style.css'
+import { useNavigate } from 'react-router-dom';
 
 enum StoneColor {
   None,
@@ -8,25 +9,30 @@ enum StoneColor {
 }
 
 const Game: React.FC = () => {
+  const navigate = useNavigate();
+
+  const boardSize: number = Number(localStorage.getItem('boardSize')) || 15;
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [board, setBoard] = useState<StoneColor[][]>(Array.from({ length: 15 }, () => Array(15).fill(StoneColor.None)));
+  const [board, setBoard] = useState<StoneColor[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill(StoneColor.None)));
   const [currentPlayer, setCurrentPlayer] = useState<StoneColor>(StoneColor.Black);
   const [gameOver, setGameOver] = useState<boolean>(false);
+  const [moves, setMoves] = useState<{ row: number; col: number; player: StoneColor }[]>([]);
+  const [gameFinished, setGameFinished] = useState<boolean>(false);
   const tileSizeRef = useRef<number>(0);
 
-  const drawBoard = () => {
+  const drawBoard = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
     if (!ctx) return;
 
-    tileSizeRef.current = canvas.width / 15;
+    tileSizeRef.current = canvas.width / boardSize;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let row = 0; row < 15; row++) {
-      for (let col = 0; col < 15; col++) {
+    for (let row = 0; row < boardSize; row++) {
+      for (let col = 0; col < boardSize; col++) {
         const stone = board[row][col];
         ctx.beginPath();
         ctx.rect(col * tileSizeRef.current, row * tileSizeRef.current, tileSizeRef.current, tileSizeRef.current);
@@ -46,7 +52,7 @@ const Game: React.FC = () => {
         }
       }
     }
-  };
+  }, [board, boardSize]);
 
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (gameOver) {
@@ -60,23 +66,26 @@ const Game: React.FC = () => {
     const col = Math.floor((event.clientX - rect.left) / tileSizeRef.current);
     const row = Math.floor((event.clientY - rect.top) / tileSizeRef.current);
 
+
     if (board[row][col] === StoneColor.None) {
       const newBoard = [...board];
       newBoard[row][col] = currentPlayer;
 
       setBoard(newBoard);
 
-      drawBoard();
+      // Update the moves state with the new move
+      setMoves(prevMoves => [...prevMoves, { row, col, player: currentPlayer }]);
 
       if (checkWin(row, col)) {
         setGameOver(true);
-        const winner = currentPlayer;
-        updateWinStatus(winner);
+        setGameFinished(true); // Set gameFinished to true when the game is finished
+        updateWinStatus(currentPlayer);
         return;
       }
 
       if (isDraw()) {
         setGameOver(true);
+        setGameFinished(true); // Set gameFinished to true when the game is finished
         updateDrawStatus();
         return;
       }
@@ -86,7 +95,7 @@ const Game: React.FC = () => {
     }
   };
 
-  const checkWin = (row: number, col: number): boolean => {
+  const checkWin = (row: number, col: number): StoneColor | null => {
     const directions = [
       [1, 0], // Horizontal
       [0, 1], // Vertical
@@ -94,43 +103,49 @@ const Game: React.FC = () => {
       [1, -1], // Diagonal (top-right to bottom-left)
     ];
 
-    const currentPlayer = board[row][col];
-
-    // Check in all directions for a line of five stones
     for (const [dx, dy] of directions) {
       let count = 1;
-
-      // Check in the positive direction
       let x = row + dx;
       let y = col + dy;
-      while (x >= 0 && x < 15 && y >= 0 && y < 15 && board[x][y] === currentPlayer) {
+
+      while (
+        x >= 0 &&
+        x < boardSize &&
+        y >= 0 &&
+        y < boardSize &&
+        board[x][y] === board[row][col]
+      ) {
         count++;
         x += dx;
         y += dy;
       }
 
-      // Check in the negative direction
       x = row - dx;
       y = col - dy;
-      while (x >= 0 && x < 15 && y >= 0 && y < 15 && board[x][y] === currentPlayer) {
+
+      while (
+        x >= 0 &&
+        x < boardSize &&
+        y >= 0 &&
+        y < boardSize &&
+        board[x][y] === board[row][col]
+      ) {
         count++;
         x -= dx;
         y -= dy;
       }
 
-      // If a line of five stones is found, return true
       if (count >= 5) {
-        return true;
+        return board[row][col]; // Return the winning player's color
       }
     }
 
-    // No winning condition found
-    return false;
+    return null; // No winning condition found
   };
 
   const isDraw = (): boolean => {
-    for (let row = 0; row < 15; row++) {
-      for (let col = 0; col < 15; col++) {
+    for (let row = 0; row < boardSize; row++) {
+      for (let col = 0; col < boardSize; col++) {
         if (board[row][col] === StoneColor.None) {
           return false; // If there is an empty cell, the game is not a draw
         }
@@ -139,16 +154,15 @@ const Game: React.FC = () => {
     return true; // If no empty cell is found, the game is a draw
   };
 
-  useEffect(() => {
-    drawBoard();
-  }, []);
-
-  const updateTurnStatus = () => {
+  const updateTurnStatus = useCallback(() => {
     const turnStatusElement = document.getElementById('turnStatus');
     if (turnStatusElement) {
       turnStatusElement.textContent = currentPlayer === StoneColor.Black ? 'Black' : 'White';
     }
-  };
+  }, [currentPlayer]);
+
+
+
 
   const updateWinStatus = (winner: StoneColor) => {
     const winStatusElement = document.getElementById('winStatus');
@@ -173,12 +187,54 @@ const Game: React.FC = () => {
   };
 
   const resetGame = () => {
-    setBoard(Array.from({ length: 15 }, () => Array(15).fill(StoneColor.None)));
+    setBoard(Array.from({ length: boardSize }, () => Array(boardSize).fill(StoneColor.None)));
     setCurrentPlayer(StoneColor.Black);
     setGameOver(false);
     drawBoard();
     updateTurnStatus();
     updateClearStatus();
+  };
+
+  const saveGameDetails = (result: string, moves: { row: number; col: number; player: StoneColor }[]) => {
+    const gameDetails = {
+      size: boardSize,
+      gameNumber: new Date().getTime(), // You can use a timestamp as a unique game number
+      date: new Date().toLocaleString(),
+      result,
+      moves,
+    };
+
+    // Get existing games from localStorage or initialize an empty array
+    const existingGames = JSON.parse(localStorage.getItem('games') || '[]');
+
+    // Add the new game details to the existing list
+    existingGames.push(gameDetails);
+
+    // Save the updated list back to localStorage
+    localStorage.setItem('games', JSON.stringify(existingGames));
+  };
+
+  const saveGame = () => {
+    if (gameFinished) {
+      const lastMove = moves[moves.length - 1]; // Get the last move
+      const winResult = checkWin(lastMove.row, lastMove.col);
+      if (winResult !== null) {
+        saveGameDetails(`${winResult === StoneColor.Black ? 'Black' : 'White'} wins`, moves);
+        navigate('/game-history');
+      } else if (isDraw()) {
+        saveGameDetails("Draw", moves);
+        navigate('/game-history');
+      } else {
+        navigate('/');
+      }
+    } else {
+      navigate('/');
+    }
+  };
+
+  const leaveGame = () => {
+    console.log("game finish", gameFinished); // Log the value of gameFinished
+    saveGame();
   };
 
   const updateClearStatus = () => {
@@ -196,26 +252,36 @@ const Game: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    drawBoard();
+    updateTurnStatus();
+  }, [drawBoard, updateTurnStatus]);
+
   return (
-    <div id="container">
-      <canvas
-        ref={canvasRef}
-        width={450}
-        height={450}
-        style={{ border: '1px solid #000' }}
-        onClick={handleCanvasClick}
-      />
-      <div id="actions">
+    <div className="game-container">
+
+      <div id="container">
         <div id="activePlayer">
           <div>Turn: </div>
           <div id="turnStatus"></div>
         </div>
-        <button id="resetButton" onClick={resetGame}>Reset Game</button>
-      </div>
-      <div id="winContainer">
-        <div id="winStatus"></div>
-        <div id="drawStatus"></div>
-        <p>Reset the game to play again.</p>
+        <canvas
+          ref={canvasRef}
+          width={450}
+          height={450}
+          style={{ border: '1px solid #000' }}
+          onClick={handleCanvasClick}
+        />
+        <div id="actions">
+
+          <button className='btn' onClick={resetGame}>Reset Game</button>
+          <button className='btn' onClick={leaveGame}>Leave</button>
+        </div>
+        <div id="winContainer">
+          <div id="winStatus"></div>
+          <div id="drawStatus"></div>
+          <p>Reset the game to play again.</p>
+        </div>
       </div>
     </div>
   );
