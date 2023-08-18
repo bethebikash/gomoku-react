@@ -2,6 +2,20 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './style.css'
 import { useNavigate } from 'react-router-dom';
 
+export interface IGameDetails {
+  size: number;
+  gameNumber: number;
+  date: string;
+  result: string;
+  moves: Move[];
+}
+
+interface Move {
+  row: number;
+  col: number;
+  player: number;
+}
+
 enum StoneColor {
   None,
   Black,
@@ -196,7 +210,7 @@ const Game: React.FC = () => {
   };
 
   const saveGameDetails = (result: string, moves: { row: number; col: number; player: StoneColor }[]) => {
-    const gameDetails = {
+    const gameDetails: IGameDetails = {
       size: boardSize,
       gameNumber: new Date().getTime(), // You can use a timestamp as a unique game number
       date: new Date().toLocaleString(),
@@ -205,7 +219,7 @@ const Game: React.FC = () => {
     };
 
     // Get existing games from localStorage or initialize an empty array
-    const existingGames = JSON.parse(localStorage.getItem('games') || '[]');
+    const existingGames: IGameDetails[] = JSON.parse(localStorage.getItem('games') || '[]');
 
     // Add the new game details to the existing list
     existingGames.push(gameDetails);
@@ -219,7 +233,7 @@ const Game: React.FC = () => {
       const lastMove = moves[moves.length - 1]; // Get the last move
       const winResult = checkWin(lastMove.row, lastMove.col);
       if (winResult !== null) {
-        saveGameDetails(`${winResult === StoneColor.Black ? 'Black' : 'White'} wins`, moves);
+        saveGameDetails(`${winResult === StoneColor.Black ? 'Black' : 'White'}`, moves);
         navigate('/game-history');
       } else if (isDraw()) {
         saveGameDetails("Draw", moves);
