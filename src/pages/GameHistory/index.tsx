@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { IGameDetails } from '../Game';
-import './style.css'
 import Unauthorized from '../../components/Unautorized';
+import { IGameDetails } from '../Game';
+import './style.css';
 
 const GameHistory = () => {
   const navigate = useNavigate();

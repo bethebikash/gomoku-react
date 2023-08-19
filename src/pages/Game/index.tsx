@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import './style.css'
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Unauthorized from '../../components/Unautorized';
+import './style.css';
 
 export interface IGameDetails {
   size: number;

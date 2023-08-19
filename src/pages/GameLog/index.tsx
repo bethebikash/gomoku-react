@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { IGameDetails, StoneColor } from '../Game';
-import './style.css'
 import Unauthorized from '../../components/Unautorized';
+import { IGameDetails, StoneColor } from '../Game';
+import './style.css';
 
 const GameLog = () => {
   const navigate = useNavigate();

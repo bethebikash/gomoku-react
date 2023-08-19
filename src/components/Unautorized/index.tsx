@@ -1,4 +1,3 @@
-
 const Unauthorized = () => {
   return (
     <div className='center center-col'>
