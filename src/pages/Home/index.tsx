@@ -22,7 +22,7 @@ const Home = () => {
     <div className="home-wrapper">
       <div className='container'>
         <div className='container-select'>
-          <label>Game Size</label>
+          <label>Board Size</label>
           <select className='select' value={boardSize} onChange={(e) => setBoardSize(Number(e.target.value))}>
             <option value={5}>5 x 5</option>
             <option value={6}>6 x 6</option>

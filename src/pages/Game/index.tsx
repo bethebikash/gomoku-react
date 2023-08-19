@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './style.css'
 import { useNavigate } from 'react-router-dom';
+import Unauthorized from '../../components/Unautorized';
 
 export interface IGameDetails {
   size: number;
@@ -24,6 +25,7 @@ export enum StoneColor {
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
+  const isAuth = localStorage.getItem('isAuth');
 
   const boardSize: number = Number(localStorage.getItem('boardSize')) || 15;
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -271,9 +273,12 @@ const Game: React.FC = () => {
     updateTurnStatus();
   }, [drawBoard, updateTurnStatus]);
 
+  if (!isAuth) {
+    return (<Unauthorized />)
+  }
+
   return (
     <div className="game-container">
-
       <div id="container">
         <div id="activePlayer">
           <div>Turn: </div>
@@ -288,8 +293,8 @@ const Game: React.FC = () => {
         />
         <div id="actions">
 
-          <button className='btn' onClick={resetGame}>Reset Game</button>
-          <button className='btn' onClick={leaveGame}>Leave</button>
+          <button className='btn btn-lg' onClick={resetGame}>Restart</button>
+          <button className='btn btn-lg' onClick={leaveGame}>Leave</button>
         </div>
         <div id="winContainer">
           <div id="winStatus"></div>

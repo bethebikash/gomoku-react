@@ -2,9 +2,11 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IGameDetails, StoneColor } from '../Game';
 import './style.css'
+import Unauthorized from '../../components/Unautorized';
 
 const GameLog = () => {
   const navigate = useNavigate();
+  const isAuth = localStorage.getItem('isAuth');
   const { id } = useParams();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tileSizeRef = useRef<number>(0);
@@ -62,14 +64,18 @@ const GameLog = () => {
     if (gameDetail) {
       drawGameDetails(gameDetail);
     }
-  }, [drawGameDetails, gameDetail, gameDetails, id])
+  }, [drawGameDetails, gameDetail, gameDetails, id]);
+
+
+  if (!isAuth) {
+    return (<Unauthorized />)
+  }
 
   if (!gameDetail) {
     return <div>
       <h4>Game details not found!</h4>
     </div>
   }
-
 
   return (
     <div className='log-contailer'>
@@ -82,7 +88,7 @@ const GameLog = () => {
         height={450}
         style={{ border: '1px solid #000' }}
       />
-      <button className='btn btn-lg' onClick={handleBack}>
+      <button className='btn btn-lg mt-20' onClick={handleBack}>
         Back
       </button>
     </div>

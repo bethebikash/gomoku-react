@@ -15,6 +15,18 @@ canvas {
   background-color: #afba6c;
 }
 
+.center {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-col {
+  flex-direction: column;
+}
+
 .btn {
   background-color: rgb(0, 95, 87);
   color: #fff;
@@ -34,4 +46,18 @@ canvas {
 
 .block {
   width: 100%;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+
+.display {
+  font-size: 64px;
+  font-weight: 300;
+}
+
+.muted {
+  color: #4a4a4a;
 }

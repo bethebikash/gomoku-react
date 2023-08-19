@@ -22,14 +22,14 @@ const NavBar = () => {
         </li>
       </ul>
       <ul>
-        {!isAuth &&
+        {!isAuth && !(pathname === '/login') &&
           <li>
             <NavLink to='/login'>Login</NavLink>
           </li>
         }
-        {isAuth && !(pathname === '/game') &&
+        {isAuth && (pathname === '/') &&
           <li>
-            <NavLink to='/game-history'>Previous Game</NavLink>
+            <NavLink to='/game-history'>Previous Games</NavLink>
           </li>
         }
         {isAuth &&
