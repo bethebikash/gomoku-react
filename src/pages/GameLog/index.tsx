@@ -6,7 +6,7 @@ import './style.css';
 
 const GameLog = () => {
   const navigate = useNavigate();
-  const isAuth = localStorage.getItem('isAuth');
+  // const isAuth = localStorage.getItem('isAuth');
   const { id } = useParams();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tileSizeRef = useRef<number>(0);
@@ -67,9 +67,9 @@ const GameLog = () => {
   }, [drawGameDetails, gameDetail, gameDetails, id]);
 
 
-  if (!isAuth) {
-    return (<Unauthorized />)
-  }
+  // if (!isAuth) {
+  //   return (<Unauthorized />)
+  // }
 
   if (!gameDetail) {
     return <div>

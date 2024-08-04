@@ -1,21 +1,21 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './style.css';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate();
   const size = localStorage.getItem('boardSize') || 5;
-  const isAuth = localStorage.getItem('isAuth');
+  // const isAuth = localStorage.getItem('isAuth');
 
   const [boardSize, setBoardSize] = useState<number>(Number(size));
 
   const handleStart = () => {
     localStorage.setItem('boardSize', boardSize.toString());
-    if (isAuth) {
-      navigate('/game');
-    } else {
-      navigate('/login')
-    }
+    navigate('/game');
+    // if (isAuth) {
+    // } else {
+    //   navigate('/login')
+    // }
   }
 
   return (

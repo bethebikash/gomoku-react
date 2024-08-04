@@ -1,16 +1,16 @@
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import './style.css';
 
 const NavBar = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { pathname } = useLocation();
-  const isAuth = localStorage.getItem('isAuth');
+  // const isAuth = localStorage.getItem('isAuth');
 
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAuth');
-    navigate('/login');
-  }
+  // const handleLogout = () => {
+  //   localStorage.removeItem('isAuth');
+  //   navigate('/login');
+  // }
 
   console.log('Location', pathname)
 
@@ -22,21 +22,21 @@ const NavBar = () => {
         </li>
       </ul>
       <ul>
-        {!isAuth && !(pathname === '/login') &&
+        {/* {!isAuth && !(pathname === '/login') &&
           <li>
             <NavLink to='/login'>Login</NavLink>
           </li>
-        }
-        {isAuth && (pathname === '/') &&
+        } */}
+        {(pathname === '/') &&
           <li>
             <NavLink to='/game-history'>Previous Games</NavLink>
           </li>
         }
-        {isAuth &&
+        {/* {isAuth &&
           <li>
             <button className='btn' onClick={handleLogout}>Logout</button>
           </li>
-        }
+        } */}
       </ul>
     </nav>
   )
